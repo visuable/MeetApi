@@ -1,13 +1,12 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using MeetApi.Models;
-using MeetApi.Models.DatabaseModels;
+﻿using MeetApi.Models.DatabaseModels;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
 
 namespace MeetApi.Database
 {
-    public sealed class MeetingsContext : DbContext
+    public class AppContext : DbContext
     {
-        public MeetingsContext([NotNull] DbContextOptions<MeetingsContext> options) : base(options)
+        public AppContext([NotNull] DbContextOptions<AppContext> options) : base(options)
         {
             Database.EnsureCreated();
         }
@@ -17,5 +16,7 @@ namespace MeetApi.Database
         public DbSet<Person> People { get; set; }
         public DbSet<Reason> Reasons { get; set; }
         public DbSet<Date> Dates { get; set; }
+        public DbSet<UserRegister> UsersRegister { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }

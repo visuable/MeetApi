@@ -1,4 +1,3 @@
-using System.Reflection;
 using AutoMapper;
 using MeetApi.Database;
 using MeetApi.Services;
@@ -11,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using System.Reflection;
 
 namespace MeetApi
 {
@@ -26,14 +26,19 @@ namespace MeetApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            ConfigureContexts(services);
             services.AddControllers().AddNewtonsoftJson(x =>
                 x.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
+            ConfigureContext(services);
+            ConfigureLocalServices(services);
+            ConfigureAuthentication(services);
+            ConfigureAuthorization(services);
+        }
+
+        private static void ConfigureLocalServices(IServiceCollection services)
+        {
             services.AddTransient<IDatabaseManager, LocalDbDatabaseManager>();
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddTransient<IAuthorizer, JwtAuthorizer>();
-            ConfigureAuthentication(services);
-            ConfigureAuthorization(services);
         }
 
         private void ConfigureAuthorization(IServiceCollection services)
@@ -80,12 +85,10 @@ namespace MeetApi
             });
         }
 
-        private void ConfigureContexts(IServiceCollection services)
+        private void ConfigureContext(IServiceCollection services)
         {
-            var connectionString1 = Configuration.GetConnectionString("MeetingDbConnection");
-            var connectionString2 = Configuration.GetConnectionString("UsersDbConnection");
-            services.AddDbContext<MeetingsContext>(opt => opt.UseSqlServer(connectionString1));
-            services.AddDbContext<UsersContext>(opt => opt.UseSqlServer(connectionString2));
+            var connectionString = Configuration.GetConnectionString("DbConnection");
+            services.AddDbContext<AppContext>(opt => opt.UseSqlServer(connectionString));
         }
 
     }

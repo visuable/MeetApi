@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using MeetApi.Models;
 using MeetApi.Models.DatabaseModels;
 using MeetApi.ViewModels;
 
