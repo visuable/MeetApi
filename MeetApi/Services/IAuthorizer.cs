@@ -1,11 +1,11 @@
 ﻿using MeetApi.Models.DatabaseModels;
-using MeetApi.ViewModels;
+using System.Threading.Tasks;
 
 namespace MeetApi.Services
 {
     public interface IAuthorizer
     {
-        void Register(ViewUserRegister user);
-        string Login(ViewUser user);
+        Task<bool> Register(UserRegister user);
+        Task<string> Login(User user);
     }
 }
