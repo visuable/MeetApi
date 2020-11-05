@@ -22,7 +22,7 @@ namespace MeetApi.Services
             _mapper = mapper;
         }
 
-        public async Task Add(ViewMeeting meeting)
+        public async Task AddAsync(ViewMeeting meeting)
         {
             var meet = _mapper.Map<Meeting>(meeting);
             var x = _context.Meetings.FirstOrDefault(x => x.Date.StartingDate

@@ -1,10 +1,13 @@
 ﻿using MeetApi.Models;
+using MeetApi.Models.Errors;
+using MeetApi.Models.Requests;
 using MeetApi.Services;
 using MeetApi.ViewModels;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MeetApi.Controllers
@@ -13,25 +16,24 @@ namespace MeetApi.Controllers
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class MeetingController : Controller
     {
-        private readonly IDatabaseManager _manager;
+        private Methods methods;
 
-        public MeetingController(IDatabaseManager manager)
+        public MeetingController(IDatabaseManager manager, Methods methods)
         {
-            _manager = manager;
+            this.methods = methods;
         }
-
         [HttpPost]
-        [Route(nameof(Add))]
-        public async Task Add([AllowNull][FromBody] ViewMeeting meeting)
+        [Route(nameof(Method))]
+        public async Task<IActionResult> Method([FromBody]Request request)
         {
-            await _manager.Add(meeting);
-        }
-
-        [HttpGet]
-        [Route(nameof(Get))]
-        public async Task<IActionResult> Get([AllowNull] MeetingGetParams meetingGetParams)
-        {
-            return Json(await _manager.GetAsync(meetingGetParams));
+            switch (request.MethodName)
+            {
+                case "Add":
+                    return await methods.Add(request);
+                case "Get":
+                    return await methods.Get(request);
+            }
+            return Json(new DefaultError());
         }
     }
 }

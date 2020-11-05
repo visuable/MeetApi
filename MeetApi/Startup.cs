@@ -39,6 +39,7 @@ namespace MeetApi
             services.AddTransient<IDatabaseManager, LocalDbDatabaseManager>();
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddTransient<IAuthorizer, JwtAuthorizer>();
+            services.AddTransient<Methods>();
         }
 
         private void ConfigureAuthorization(IServiceCollection services)
