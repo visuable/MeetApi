@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MeetApi</name>
+    </assembly>
+    <members>
+        <member name="M:MeetApi.Controllers.AccountController.Login(MeetApi.ViewModels.ViewUser)">
+            <summary>
+            Авторизация по логину и паролю.
+            </summary>
+            <param name="user">User -- структура: login, password</param>
+            <returns>True, в случае успешной авторизации, False, если авторизация не прошла.</returns>
+            <response code="200">Если авторизация прошла успешно.</response>
+            <response code="400">Скорее всего, введенные данные неправильны.</response>
+        </member>
+        <member name="M:MeetApi.Controllers.AccountController.Register(MeetApi.ViewModels.ViewUserRegister)">
+            <summary>
+            Регистрация по логину, паролю и Person.
+            </summary>
+            <param name="user">User -- структура: login, password, person</param>
+            <returns>True, в случае успешной регистрации, False, если регистрация не прошла.</returns>
+            <remarks>
+            Важно! Person в запросе не может быть null.
+            </remarks>
+            <response code="200">Если регистрация прошла успешно.</response>
+            <response code="400">Скорее всего, аккаунт уже зарегестрирован.</response>
+        </member>
+        <member name="M:MeetApi.Controllers.MeetingController.Add(MeetApi.Models.ApiRequests.JsonApiRequest{MeetApi.ViewModels.ViewMeeting})">
+            <summary>
+            Добавляет встречу в общий список.
+            </summary>
+            <param name="request">Request -- сущность.</param>
+            <returns>True, в случае успешного добавления, False, если произошли неполадки.</returns>
+            <response code="200">Объект внесен в общий список.</response>
+            <response code="400">Некорректные данные.</response>
+        </member>
+        <member name="M:MeetApi.Controllers.MeetingController.Get(MeetApi.Models.ApiRequests.JsonApiRequest{MeetApi.Models.MeetingGetParams})">
+            <summary>
+            Возвращает список встреч по опциональным параметрам.
+            </summary>
+            <param name="request">Request -- сущность.</param>
+            <returns>Список meeting, в случае успешного добавления, null, если произошли неполадки.</returns>
+            <response code="200">Успешно.</response>
+        </member>
+    </members>
+</doc>

@@ -26,29 +26,49 @@ namespace MeetApi.Controllers
             _manager = manager;
             _mapper = mapper;
         }
+        /// <summary>
+        /// Добавляет встречу в общий список.
+        /// </summary>
+        /// <param name="request">Request -- сущность.</param>
+        /// <returns>True, в случае успешного добавления, False, если произошли неполадки.</returns>
+        /// <response code="200">Объект внесен в общий список.</response>
+        /// <response code="400">Некорректные данные.</response>
         [HttpPost]
         [Route(nameof(Add))]
         [ProducesResponseType(typeof(JsonApiResponse<bool>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(JsonApiResponse<bool>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Add(JsonApiRequest<ViewMeeting> request)
         {
             var result = await _manager.AddAsync(_mapper.Map<Meeting>(request.RequestParams));
-            return Ok(new JsonApiResponse<bool>()
+            var model = new JsonApiResponse<bool>()
             {
                 Errors = null,
                 Response = result
-            });
+            };
+            if (result)
+            {
+                return Ok(model);
+            }
+            return BadRequest(model);
         }
+        /// <summary>
+        /// Возвращает список встреч по опциональным параметрам.
+        /// </summary>
+        /// <param name="request">Request -- сущность.</param>
+        /// <returns>Список meeting, в случае успешного добавления, null, если произошли неполадки.</returns>
+        /// <response code="200">Успешно.</response>
         [HttpGet]
         [Route(nameof(Get))]
         [ProducesResponseType(typeof(JsonApiResponse<List<Meeting>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(JsonApiRequest<MeetingGetParams> request)
         {
             var result = await _manager.GetAsync(request.RequestParams);
-            return Ok(new JsonApiResponse<List<Meeting>>()
+            var model = new JsonApiResponse<List<Meeting>>()
             {
                 Errors = null,
                 Response = result
-            });
+            };
+            return Ok(model);
         }
     }
 }
