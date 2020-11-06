@@ -1,15 +1,16 @@
-﻿using MeetApi.Models;
-using MeetApi.Models.Errors;
-using MeetApi.Models.Requests;
+﻿
+using AutoMapper;
+using MeetApi.Models;
+using MeetApi.Models.ApiRequests;
+using MeetApi.Models.ApiResponses;
+using MeetApi.Models.DatabaseModels;
 using MeetApi.Services;
 using MeetApi.ViewModels;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Swashbuckle.AspNetCore.Swagger;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace MeetApi.Controllers
@@ -18,24 +19,36 @@ namespace MeetApi.Controllers
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class MeetingController : Controller
     {
-        private Methods methods;
-
-        public MeetingController(Methods methods)
+        private IDatabaseManager _manager;
+        private IMapper _mapper;
+        public MeetingController(IDatabaseManager manager, IMapper mapper)
         {
-            this.methods = methods;
+            _manager = manager;
+            _mapper = mapper;
         }
         [HttpPost]
-        [Route(nameof(Method))]
-        public async Task<IActionResult> Method([FromBody]Request request)
+        [Route(nameof(Add))]
+        [ProducesResponseType(typeof(JsonApiResponse<bool>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Add(JsonApiRequest<ViewMeeting> request)
         {
-            switch (request.MethodName)
+            var result = await _manager.AddAsync(_mapper.Map<Meeting>(request.RequestParams));
+            return Ok(new JsonApiResponse<bool>()
             {
-                case "Add":
-                    return await methods.Add(request);
-                case "Get":
-                    return await methods.Get(request);
-            }
-            return Json(new DefaultError());
+                Errors = null,
+                Response = result
+            });
+        }
+        [HttpGet]
+        [Route(nameof(Get))]
+        [ProducesResponseType(typeof(JsonApiResponse<List<Meeting>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Get(JsonApiRequest<MeetingGetParams> request)
+        {
+            var result = await _manager.GetAsync(request.RequestParams);
+            return Ok(new JsonApiResponse<List<Meeting>>()
+            {
+                Errors = null,
+                Response = result
+            });
         }
     }
 }

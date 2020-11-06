@@ -1,7 +1,5 @@
-﻿using AutoMapper;
-using MeetApi.Models;
+﻿using MeetApi.Models;
 using MeetApi.Models.DatabaseModels;
-using MeetApi.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -13,38 +11,35 @@ namespace MeetApi.Services
 {
     public class LocalDbDatabaseManager : IDatabaseManager
     {
-        private readonly IMapper _mapper;
         private readonly Database.AppContext _context;
 
-        public LocalDbDatabaseManager(Database.AppContext context, IMapper mapper)
+        public LocalDbDatabaseManager(Database.AppContext context)
         {
             _context = context;
-            _mapper = mapper;
         }
 
-        public async Task AddAsync(ViewMeeting meeting)
+        public async Task<bool> AddAsync(Meeting meeting)
         {
-            var meet = _mapper.Map<Meeting>(meeting);
             var x = _context.Meetings.FirstOrDefault(x => x.Date.StartingDate
-                .Equals(meet.Date.StartingDate));
+                .Equals(meeting.Date.StartingDate));
 
             if (x != null)
             {
                 // Ищем ближайшую дату.
-                var nearDate = _context.Dates.FirstOrDefault(x => x.StartingDate < meet.Date.StartingDate);
-                if (meet.Date.StartingDate + meet.Date.Duration > nearDate.StartingDate)
-                    meet.Date.StartingDate = nearDate.StartingDate + nearDate.Duration;
+                var nearDate = _context.Dates.FirstOrDefault(x => x.StartingDate < meeting.Date.StartingDate);
+                if (meeting.Date.StartingDate + meeting.Date.Duration > nearDate.StartingDate)
+                    meeting.Date.StartingDate = nearDate.StartingDate + nearDate.Duration;
             }
-            await _context.AddAsync(meet);
+            await _context.AddAsync(meeting);
             await _context.SaveChangesAsync();
-            return;
+            return true;
         }
 
-        public async Task<List<ViewMeeting>> GetAsync([AllowNull] MeetingGetParams meetingGetParams)
+        public async Task<List<Meeting>> GetAsync([AllowNull] MeetingGetParams meetingGetParams)
         {
             var list = await FullList(meetingGetParams);
-            if (list != null) return list.Select(x => _mapper.Map<ViewMeeting>(x)).ToList();
-            return (await OptionList(meetingGetParams)).Select(x => _mapper.Map<ViewMeeting>(x)).ToList();
+            if (list != null) return list;
+            return await OptionList(meetingGetParams);
         }
 
         private async Task<List<Meeting>> OptionList(MeetingGetParams meetingGetParams)

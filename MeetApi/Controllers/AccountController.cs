@@ -32,7 +32,7 @@ namespace MeetApi.Controllers
         {
             var dbUser = _mapper.Map<User>(user);
             var loginResult = await _authorizer.Login(dbUser);
-            if(string.Equals(loginResult, string.Empty))
+            if (string.Equals(loginResult, string.Empty))
             {
                 return false;
             }

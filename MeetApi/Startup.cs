@@ -27,10 +27,12 @@ namespace MeetApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSwaggerGen();
-            services.AddControllers().AddNewtonsoftJson(x => {
+            services.AddMvc(x => x.EnableEndpointRouting = false);
+            services.AddControllers().AddNewtonsoftJson(x =>
+            {
                 x.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 x.SerializerSettings.TypeNameHandling = TypeNameHandling.All;
-                });
+            });
             ConfigureContext(services);
             ConfigureLocalServices(services);
             ConfigureAuthentication(services);
@@ -42,7 +44,6 @@ namespace MeetApi
             services.AddTransient<IDatabaseManager, LocalDbDatabaseManager>();
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddTransient<IAuthorizer, JwtAuthorizer>();
-            services.AddTransient<Methods>();
         }
 
         private void ConfigureAuthorization(IServiceCollection services)
@@ -58,13 +59,17 @@ namespace MeetApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseMvc();
+            app.UseSwagger();
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+            });
             app.UseHttpsRedirection();
             app.UseRouting();
 
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseSwagger();
-            app.UseSwaggerUI();
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
         private void ConfigureAuthentication(IServiceCollection services)

@@ -1,5 +1,5 @@
 ﻿using MeetApi.Models;
-using MeetApi.ViewModels;
+using MeetApi.Models.DatabaseModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -7,7 +7,7 @@ namespace MeetApi.Services
 {
     public interface IDatabaseManager
     {
-        Task AddAsync(ViewMeeting meeting);
-        Task<List<ViewMeeting>> GetAsync(MeetingGetParams meetingGetParams);
+        Task<bool> AddAsync(Meeting meeting);
+        Task<List<Meeting>> GetAsync(MeetingGetParams meetingGetParams);
     }
 }
