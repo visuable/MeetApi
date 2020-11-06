@@ -37,8 +37,11 @@ namespace MeetApi.Services
 
         public async Task<List<Meeting>> GetAsync([AllowNull] MeetingGetParams meetingGetParams)
         {
-            var list = await FullList(meetingGetParams);
-            if (list != null) return list;
+            if (meetingGetParams == null)
+            {
+                var list = await FullList(meetingGetParams);
+                if (list != null) return list;
+            }
             return await OptionList(meetingGetParams);
         }
 

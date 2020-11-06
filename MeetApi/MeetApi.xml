@@ -39,7 +39,7 @@
             Возвращает список встреч по опциональным параметрам.
             </summary>
             <param name="request">Request -- сущность.</param>
-            <returns>Список meeting, в случае успешного добавления, null, если произошли неполадки.</returns>
+            <returns>Список ViewMeeting, в случае успешного добавления, null, если произошли неполадки.</returns>
             <response code="200">Успешно.</response>
         </member>
     </members>

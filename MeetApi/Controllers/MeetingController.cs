@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MeetApi.Controllers
@@ -37,7 +39,7 @@ namespace MeetApi.Controllers
         [Route(nameof(Add))]
         [ProducesResponseType(typeof(JsonApiResponse<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(JsonApiResponse<bool>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Add(JsonApiRequest<ViewMeeting> request)
+        public async Task<IActionResult> Add([FromBody]JsonApiRequest<ViewMeeting> request)
         {
             var result = await _manager.AddAsync(_mapper.Map<Meeting>(request.RequestParams));
             var model = new JsonApiResponse<bool>()
@@ -55,18 +57,18 @@ namespace MeetApi.Controllers
         /// Возвращает список встреч по опциональным параметрам.
         /// </summary>
         /// <param name="request">Request -- сущность.</param>
-        /// <returns>Список meeting, в случае успешного добавления, null, если произошли неполадки.</returns>
+        /// <returns>Список ViewMeeting, в случае успешного добавления, null, если произошли неполадки.</returns>
         /// <response code="200">Успешно.</response>
-        [HttpGet]
+        [HttpPost]
         [Route(nameof(Get))]
-        [ProducesResponseType(typeof(JsonApiResponse<List<Meeting>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Get(JsonApiRequest<MeetingGetParams> request)
+        [ProducesResponseType(typeof(JsonApiResponse<List<ViewMeeting>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Get([FromBody][AllowNull]JsonApiRequest<MeetingGetParams> request)
         {
             var result = await _manager.GetAsync(request.RequestParams);
-            var model = new JsonApiResponse<List<Meeting>>()
+            var model = new JsonApiResponse<List<ViewMeeting>>()
             {
                 Errors = null,
-                Response = result
+                Response = result.Select(x => _mapper.Map<ViewMeeting>(x)).ToList()
             };
             return Ok(model);
         }
