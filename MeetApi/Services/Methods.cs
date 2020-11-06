@@ -24,7 +24,7 @@ namespace MeetApi.Services
         }
         public async Task<IActionResult> Get(Request request)
         {
-            var req = request as GetRequest;
+            var req = (GetRequest)request;
             var result = await _manager.GetAsync(req.Params);
             return new JsonResult(new GetResponse(result));
         }

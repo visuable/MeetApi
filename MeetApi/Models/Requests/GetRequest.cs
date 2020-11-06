@@ -11,7 +11,7 @@ namespace MeetApi.Models.Requests
     public class GetRequest : Request
     {
         public MeetingGetParams Params { get; set; }
-        public GetRequest() : base("Add")
+        public GetRequest() : base("Get")
         {
 
         }

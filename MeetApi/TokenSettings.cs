@@ -7,7 +7,7 @@ namespace MeetApi
     {
         public const string Issuer = "This";
         public const string Audience = "App";
-        public const int Lifetime = 1;
+        public const int Lifetime = 10;
 
         public const string SecretKey = "1234567890!$%^&*+qazcxvbeadsop";
 
