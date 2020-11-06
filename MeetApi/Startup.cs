@@ -26,6 +26,7 @@ namespace MeetApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSwaggerGen();
             services.AddControllers().AddNewtonsoftJson(x => {
                 x.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 x.SerializerSettings.TypeNameHandling = TypeNameHandling.All;
@@ -62,7 +63,8 @@ namespace MeetApi
 
             app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseSwagger();
+            app.UseSwaggerUI();
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
         private void ConfigureAuthentication(IServiceCollection services)
