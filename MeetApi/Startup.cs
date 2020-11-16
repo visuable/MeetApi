@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using Swashbuckle.Swagger;
 using System.IO;
 using System.Reflection;
+using MeetApi.MeetApi.Hubs;
 
 namespace MeetApi
 {
@@ -29,18 +30,20 @@ namespace MeetApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSwaggerGen(c =>
-            {
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(System.AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath, true);
-            });
+            // services.AddSwaggerGen(c =>
+            // {
+            //     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            //     var xmlPath = Path.Combine(System.AppContext.BaseDirectory, xmlFile);
+            //     //c.IncludeXmlComments(xmlPath, true);
+            // });
             services.AddControllers().AddNewtonsoftJson(x =>
             {
                 x.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 x.SerializerSettings.TypeNameHandling = TypeNameHandling.All;
             });
-            ConfigureContext(services);
+            services.AddSignalR();
+            var connectionString = "Data Source = (LocalDb)\\MSSQLLocalDB; Database = appEzDb;";
+            services.AddDbContext<AppContext>(opt => opt.UseSqlServer(connectionString));
             ConfigureLocalServices(services);
             ConfigureAuthentication(services);
             ConfigureAuthorization(services);
@@ -66,17 +69,21 @@ namespace MeetApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseSwagger();
-            app.UseSwaggerUI(options =>
-            {
-                options.SwaggerEndpoint("v1/swagger.json", "v1");
-            });
+            // app.UseSwagger();
+            // app.UseSwaggerUI(options =>
+            // {
+            //     options.SwaggerEndpoint("v1/swagger.json", "v1");
+            // });
             app.UseHttpsRedirection();
             app.UseRouting();
 
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapHub<MeetHub>("/meetings");
+                endpoints.MapDefaultControllerRoute();
+            });
         }
         private void ConfigureAuthentication(IServiceCollection services)
         {
@@ -100,12 +107,5 @@ namespace MeetApi
                 };
             });
         }
-
-        private void ConfigureContext(IServiceCollection services)
-        {
-            var connectionString = Configuration.GetConnectionString("DbConnection");
-            services.AddDbContext<AppContext>(opt => opt.UseSqlServer(connectionString));
-        }
-
     }
 }

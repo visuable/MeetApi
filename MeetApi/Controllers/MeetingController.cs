@@ -14,6 +14,8 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
+using MeetApi.MeetApi.Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 namespace MeetApi.Controllers
 {
@@ -23,10 +25,12 @@ namespace MeetApi.Controllers
     {
         private IDatabaseManager _manager;
         private IMapper _mapper;
-        public MeetingController(IDatabaseManager manager, IMapper mapper)
+        private IHubContext<MeetHub> _context;
+        public MeetingController(IDatabaseManager manager, IMapper mapper, IHubContext<MeetHub> context)
         {
             _manager = manager;
             _mapper = mapper;
+            _context = context;
         }
         /// <summary>
         /// Добавляет встречу в общий список.
@@ -37,8 +41,8 @@ namespace MeetApi.Controllers
         /// <response code="400">Некорректные данные.</response>
         [HttpPost]
         [Route(nameof(Add))]
-        [ProducesResponseType(typeof(JsonApiResponse<bool>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(JsonApiResponse<bool>), StatusCodes.Status400BadRequest)]
+        //[ProducesResponseType(typeof(JsonApiResponse<bool>), StatusCodes.Status200OK)]
+        //[ProducesResponseType(typeof(JsonApiResponse<bool>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Add([FromBody]JsonApiRequest<ViewMeeting> request)
         {
             var result = await _manager.AddAsync(_mapper.Map<Meeting>(request.RequestParams));
@@ -49,8 +53,10 @@ namespace MeetApi.Controllers
             };
             if (result)
             {
+                await _context.Clients.All.SendAsync("AddResponse", true);
                 return Ok(model);
             }
+            await _context.Clients.All.SendAsync("AddResponse", false);
             return BadRequest(model);
         }
         /// <summary>
@@ -61,7 +67,7 @@ namespace MeetApi.Controllers
         /// <response code="200">Успешно.</response>
         [HttpPost]
         [Route(nameof(Get))]
-        [ProducesResponseType(typeof(JsonApiResponse<List<ViewMeeting>>), StatusCodes.Status200OK)]
+        //[ProducesResponseType(typeof(JsonApiResponse<List<ViewMeeting>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get([FromBody][AllowNull]JsonApiRequest<MeetingGetParams> request)
         {
             var result = await _manager.GetAsync(request.RequestParams);
@@ -70,6 +76,7 @@ namespace MeetApi.Controllers
                 Errors = null,
                 Response = result.Select(x => _mapper.Map<ViewMeeting>(x)).ToList()
             };
+            await _context.Clients.All.SendAsync("GetResponse", model.Response);
             return Ok(model);
         }
     }

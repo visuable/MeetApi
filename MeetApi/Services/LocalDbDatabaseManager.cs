@@ -64,14 +64,15 @@ namespace MeetApi.Services
 
         private async Task<List<Meeting>> FullList(MeetingGetParams meetingGetParams)
         {
-            if (meetingGetParams.Department == null &&
+            if (meetingGetParams == null || meetingGetParams.Department == null &&
                 meetingGetParams.Duration == TimeSpan.Zero &&
                 meetingGetParams.FirstName == null &&
                 meetingGetParams.IssueDescription == null &&
                 meetingGetParams.LastName == null &&
                 meetingGetParams.ReasonDescription == null &&
                 meetingGetParams.Type == null) return await RenderList();
-            return null;
+
+            return await OptionList(meetingGetParams);
         }
 
         private async Task<List<Meeting>> RenderList()
