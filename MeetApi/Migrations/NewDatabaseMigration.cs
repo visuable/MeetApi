@@ -1,43 +1,37 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
 using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace MeetApi.Migrations
+namespace MeetApi.MeetApi.Migrations
 {
     public partial class NewDatabaseMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Dates",
-                columns: table => new
+                "Dates",
+                table => new
                 {
                     DateId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     StartingDate = table.Column<DateTime>(nullable: false),
                     Duration = table.Column<TimeSpan>(nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Dates", x => x.DateId);
-                });
+                constraints: table => { table.PrimaryKey("PK_Dates", x => x.DateId); });
 
             migrationBuilder.CreateTable(
-                name: "Issues",
-                columns: table => new
+                "Issues",
+                table => new
                 {
                     IssueId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Description = table.Column<string>(nullable: true),
                     Type = table.Column<string>(nullable: true)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Issues", x => x.IssueId);
-                });
+                constraints: table => { table.PrimaryKey("PK_Issues", x => x.IssueId); });
 
             migrationBuilder.CreateTable(
-                name: "People",
-                columns: table => new
+                "People",
+                table => new
                 {
                     PersonId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
@@ -45,27 +39,21 @@ namespace MeetApi.Migrations
                     LastName = table.Column<string>(nullable: true),
                     Department = table.Column<string>(nullable: true)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_People", x => x.PersonId);
-                });
+                constraints: table => { table.PrimaryKey("PK_People", x => x.PersonId); });
 
             migrationBuilder.CreateTable(
-                name: "Reasons",
-                columns: table => new
+                "Reasons",
+                table => new
                 {
                     ReasonId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Description = table.Column<string>(nullable: true)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Reasons", x => x.ReasonId);
-                });
+                constraints: table => { table.PrimaryKey("PK_Reasons", x => x.ReasonId); });
 
             migrationBuilder.CreateTable(
-                name: "Meetings",
-                columns: table => new
+                "Meetings",
+                table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
@@ -77,28 +65,28 @@ namespace MeetApi.Migrations
                 {
                     table.PrimaryKey("PK_Meetings", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Meetings_Dates_DateId",
-                        column: x => x.DateId,
-                        principalTable: "Dates",
-                        principalColumn: "DateId",
+                        "FK_Meetings_Dates_DateId",
+                        x => x.DateId,
+                        "Dates",
+                        "DateId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Meetings_Issues_IssueId",
-                        column: x => x.IssueId,
-                        principalTable: "Issues",
-                        principalColumn: "IssueId",
+                        "FK_Meetings_Issues_IssueId",
+                        x => x.IssueId,
+                        "Issues",
+                        "IssueId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Meetings_People_PersonId",
-                        column: x => x.PersonId,
-                        principalTable: "People",
-                        principalColumn: "PersonId",
+                        "FK_Meetings_People_PersonId",
+                        x => x.PersonId,
+                        "People",
+                        "PersonId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Users",
-                columns: table => new
+                "Users",
+                table => new
                 {
                     Login = table.Column<string>(nullable: false),
                     Password = table.Column<string>(nullable: true),
@@ -109,53 +97,53 @@ namespace MeetApi.Migrations
                 {
                     table.PrimaryKey("PK_Users", x => x.Login);
                     table.ForeignKey(
-                        name: "FK_Users_People_PersonId",
-                        column: x => x.PersonId,
-                        principalTable: "People",
-                        principalColumn: "PersonId",
+                        "FK_Users_People_PersonId",
+                        x => x.PersonId,
+                        "People",
+                        "PersonId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Meetings_DateId",
-                table: "Meetings",
-                column: "DateId");
+                "IX_Meetings_DateId",
+                "Meetings",
+                "DateId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Meetings_IssueId",
-                table: "Meetings",
-                column: "IssueId");
+                "IX_Meetings_IssueId",
+                "Meetings",
+                "IssueId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Meetings_PersonId",
-                table: "Meetings",
-                column: "PersonId");
+                "IX_Meetings_PersonId",
+                "Meetings",
+                "PersonId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_PersonId",
-                table: "Users",
-                column: "PersonId");
+                "IX_Users_PersonId",
+                "Users",
+                "PersonId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Meetings");
+                "Meetings");
 
             migrationBuilder.DropTable(
-                name: "Reasons");
+                "Reasons");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                "Users");
 
             migrationBuilder.DropTable(
-                name: "Dates");
+                "Dates");
 
             migrationBuilder.DropTable(
-                name: "Issues");
+                "Issues");
 
             migrationBuilder.DropTable(
-                name: "People");
+                "People");
         }
     }
 }

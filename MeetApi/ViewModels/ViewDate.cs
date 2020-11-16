@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MeetApi.ViewModels
+namespace MeetApi.MeetApi.ViewModels
 {
     public class ViewDate
     {

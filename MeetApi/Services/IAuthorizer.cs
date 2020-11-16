@@ -1,7 +1,7 @@
-﻿using MeetApi.Models.DatabaseModels;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using MeetApi.MeetApi.Models.DatabaseModels;
 
-namespace MeetApi.Services
+namespace MeetApi.MeetApi.Services
 {
     public interface IAuthorizer
     {

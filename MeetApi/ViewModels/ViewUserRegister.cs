@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MeetApi.ViewModels
+namespace MeetApi.MeetApi.ViewModels
 {
     public class ViewUserRegister : ViewUser
     {
-        [Required]
-        public ViewPerson Person { get; set; }
+        [Required] public ViewPerson Person { get; set; }
     }
 }

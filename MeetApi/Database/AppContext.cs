@@ -1,8 +1,8 @@
-﻿using MeetApi.Models.DatabaseModels;
+﻿using System.Diagnostics.CodeAnalysis;
+using MeetApi.MeetApi.Models.DatabaseModels;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics.CodeAnalysis;
 
-namespace MeetApi.Database
+namespace MeetApi.MeetApi.Database
 {
     public class AppContext : DbContext
     {

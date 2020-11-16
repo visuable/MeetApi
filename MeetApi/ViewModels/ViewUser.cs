@@ -1,12 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MeetApi.ViewModels
+namespace MeetApi.MeetApi.ViewModels
 {
     public class ViewUser
     {
-        [Required]
-        public string Login { get; set; }
-        [Required]
-        public string Password { get; set; }
+        [Required] public string Login { get; set; }
+
+        [Required] public string Password { get; set; }
     }
 }

@@ -1,19 +1,20 @@
-﻿using MeetApi.Models;
-using MeetApi.Models.DatabaseModels;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
+using MeetApi.MeetApi.Models;
+using MeetApi.MeetApi.Models.DatabaseModels;
+using Microsoft.EntityFrameworkCore;
+using AppContext = MeetApi.MeetApi.Database.AppContext;
 
-namespace MeetApi.Services
+namespace MeetApi.MeetApi.Services
 {
     public class LocalDbDatabaseManager : IDatabaseManager
     {
-        private readonly Database.AppContext _context;
+        private readonly AppContext _context;
 
-        public LocalDbDatabaseManager(Database.AppContext context)
+        public LocalDbDatabaseManager(AppContext context)
         {
             _context = context;
         }
@@ -30,6 +31,7 @@ namespace MeetApi.Services
                 if (meeting.Date.StartingDate + meeting.Date.Duration > nearDate.StartingDate)
                     meeting.Date.StartingDate = nearDate.StartingDate + nearDate.Duration;
             }
+
             await _context.AddAsync(meeting);
             await _context.SaveChangesAsync();
             return true;
@@ -42,6 +44,7 @@ namespace MeetApi.Services
                 var list = await FullList(meetingGetParams);
                 if (list != null) return list;
             }
+
             return await OptionList(meetingGetParams);
         }
 

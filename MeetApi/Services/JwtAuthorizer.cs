@@ -1,19 +1,19 @@
-﻿using MeetApi.Helpers;
-using MeetApi.Models.DatabaseModels;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System;
+﻿using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
-using AppContext = MeetApi.Database.AppContext;
+using MeetApi.MeetApi.Helpers;
+using MeetApi.MeetApi.Models.DatabaseModels;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using AppContext = MeetApi.MeetApi.Database.AppContext;
 
-namespace MeetApi.Services
+namespace MeetApi.MeetApi.Services
 {
     public class JwtAuthorizer : IAuthorizer
     {
         private readonly AppContext _context;
 
-        public JwtAuthorizer(Database.AppContext context)
+        public JwtAuthorizer(AppContext context)
         {
             _context = context;
         }
@@ -21,12 +21,11 @@ namespace MeetApi.Services
         public async Task<string> Login(User user)
         {
             if (!await ValidUser(user)) return string.Empty;
-            var token = new JwtSecurityToken(TokenSettings.Issuer, audience: TokenSettings.Audience,
+            var token = new JwtSecurityToken(TokenSettings.Issuer, TokenSettings.Audience,
                 notBefore: DateTime.Now,
                 expires: DateTime.Now.AddMinutes(TokenSettings.Lifetime), signingCredentials:
                 new SigningCredentials(TokenSettings.GetSymmetricKey(), SecurityAlgorithms.HmacSha256));
             return new JwtSecurityTokenHandler().WriteToken(token);
-
         }
 
         public async Task<bool> Register(UserRegister user)
@@ -40,6 +39,7 @@ namespace MeetApi.Services
             await _context.SaveChangesAsync();
             return true;
         }
+
         private async Task<bool> ValidUser(User user)
         {
             var dbUser = await _context.UsersRegister

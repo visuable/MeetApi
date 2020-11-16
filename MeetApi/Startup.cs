@@ -1,22 +1,14 @@
-using AutoMapper;
-using MeetApi.Database;
-using MeetApi.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
+using MeetApi.MeetApi.Database;
+using MeetApi.MeetApi.Hubs;
+using MeetApi.MeetApi.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.PlatformAbstractions;
-using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using Swashbuckle.Swagger;
-using System.IO;
-using System.Reflection;
-using MeetApi.MeetApi.Hubs;
 
-namespace MeetApi
+namespace MeetApi.MeetApi
 {
     public class Startup
     {
@@ -36,34 +28,15 @@ namespace MeetApi
             //     var xmlPath = Path.Combine(System.AppContext.BaseDirectory, xmlFile);
             //     //c.IncludeXmlComments(xmlPath, true);
             // });
+            var connectionString = "Data Source = (LocalDb)\\MSSQLLocalDB; Database = appEzDb;";
+            services.AddDbContext<AppContext>(opt => opt.UseSqlServer(connectionString));
             services.AddControllers().AddNewtonsoftJson(x =>
             {
                 x.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 x.SerializerSettings.TypeNameHandling = TypeNameHandling.All;
             });
             services.AddSignalR();
-            var connectionString = "Data Source = (LocalDb)\\MSSQLLocalDB; Database = appEzDb;";
-            services.AddDbContext<AppContext>(opt => opt.UseSqlServer(connectionString));
-            ConfigureLocalServices(services);
-            ConfigureAuthentication(services);
-            ConfigureAuthorization(services);
-        }
-
-        private static void ConfigureLocalServices(IServiceCollection services)
-        {
-            services.AddTransient<IDatabaseManager, LocalDbDatabaseManager>();
-            services.AddAutoMapper(Assembly.GetExecutingAssembly());
-            services.AddTransient<IAuthorizer, JwtAuthorizer>();
-        }
-
-        private void ConfigureAuthorization(IServiceCollection services)
-        {
-            services.AddAuthorization(options =>
-            {
-                options.DefaultPolicy = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
-                    .RequireAuthenticatedUser()
-                    .Build();
-            });
+            services.ConfigureLocalServices().ConfigureAuthentication().ConfigureAuthorization();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -83,28 +56,6 @@ namespace MeetApi
             {
                 endpoints.MapHub<MeetHub>("/meetings");
                 endpoints.MapDefaultControllerRoute();
-            });
-        }
-        private void ConfigureAuthentication(IServiceCollection services)
-        {
-            services.AddAuthentication(option =>
-            {
-                option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateActor = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidateTokenReplay = true,
-                    ValidIssuer = TokenSettings.Issuer,
-                    ValidAudience = TokenSettings.Audience,
-                    IssuerSigningKey = TokenSettings.GetSymmetricKey()
-                };
             });
         }
     }

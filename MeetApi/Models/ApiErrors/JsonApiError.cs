@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace MeetApi.Models.ApiErrors
+namespace MeetApi.MeetApi.Models.ApiErrors
 {
     public class JsonApiError
     {

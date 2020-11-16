@@ -1,7 +1,7 @@
-﻿using MeetApi.Models.ApiErrors;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using MeetApi.MeetApi.Models.ApiErrors;
 
-namespace MeetApi.Models.ApiResponses
+namespace MeetApi.MeetApi.Models.ApiResponses
 {
     public class JsonApiResponse<TResult>
     {

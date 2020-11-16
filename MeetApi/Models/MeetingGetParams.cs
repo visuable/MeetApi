@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MeetApi.Models
+namespace MeetApi.MeetApi.Models
 {
     public class MeetingGetParams
     {

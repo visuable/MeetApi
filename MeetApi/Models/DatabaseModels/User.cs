@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MeetApi.Models.DatabaseModels
+namespace MeetApi.MeetApi.Models.DatabaseModels
 {
     public class User
     {

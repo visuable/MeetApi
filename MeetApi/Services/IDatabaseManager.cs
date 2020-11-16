@@ -1,9 +1,9 @@
-﻿using MeetApi.Models;
-using MeetApi.Models.DatabaseModels;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using MeetApi.MeetApi.Models;
+using MeetApi.MeetApi.Models.DatabaseModels;
 
-namespace MeetApi.Services
+namespace MeetApi.MeetApi.Services
 {
     public interface IDatabaseManager
     {

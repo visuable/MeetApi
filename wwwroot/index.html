@@ -1,13 +1,13 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <title>SignalR Chat</title>
 </head>
 <body>
 <div id="inputForm">
-    <input type="text" id="text" />
-    <input type="button" id="sendBtn" value="���������" />
+    <input type="text" id="text"/>
+    <input type="button" id="sendBtn" value="���������"/>
 </div>
 <div id="status"></div>
 <div id="info"></div>
@@ -19,22 +19,24 @@
         .build();
 
     // ��������� ��������� �� �������
-    hubConnection.on('GetResponse', function (message) {
+    hubConnection.on('GetResponse',
+        function(message) {
 
-        let elem = document.createElement("p");
-        elem.appendChild(document.createTextNode(message));
+            let elem = document.createElement("p");
+            elem.appendChild(document.createTextNode(message));
 
-        var firstElem = document.getElementById("info").firstChild;
-        document.getElementById("info").insertBefore(elem, firstElem);
+            var firstElem = document.getElementById("info").firstChild;
+            document.getElementById("info").insertBefore(elem, firstElem);
 
-    });
+        });
 
     // �������� ��������� �� ������
-    document.getElementById("sendBtn").addEventListener("click", function (e) {
-        let message = document.getElementById("text").value;
-        hubConnection.invoke('SendText', message);
-        document.getElementById("text").value = message;
-    });
+    document.getElementById("sendBtn").addEventListener("click",
+        function(e) {
+            let message = document.getElementById("text").value;
+            hubConnection.invoke('SendText', message);
+            document.getElementById("text").value = message;
+        });
 
     hubConnection.start();
 </script>

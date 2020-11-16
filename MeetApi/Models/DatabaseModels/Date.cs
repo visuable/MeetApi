@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MeetApi.Models.DatabaseModels
+namespace MeetApi.MeetApi.Models.DatabaseModels
 {
     public class Date
     {

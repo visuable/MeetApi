@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using MeetApi.Models.DatabaseModels;
-using MeetApi.ViewModels;
+using MeetApi.MeetApi.Models.DatabaseModels;
+using MeetApi.MeetApi.ViewModels;
 
-namespace MeetApi.Profiles
+namespace MeetApi.MeetApi.Profiles
 {
     public class ViewMeetingToMeetingProfile : Profile
     {

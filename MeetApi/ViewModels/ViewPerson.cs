@@ -1,4 +1,4 @@
-﻿namespace MeetApi.ViewModels
+﻿namespace MeetApi.MeetApi.ViewModels
 {
     public class ViewPerson
     {

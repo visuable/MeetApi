@@ -1,4 +1,4 @@
-﻿namespace MeetApi.Models.ApiRequests
+﻿namespace MeetApi.MeetApi.Models.ApiRequests
 {
     public class JsonApiRequest<TParams>
     {
